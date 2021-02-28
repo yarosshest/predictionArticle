@@ -1,3 +1,4 @@
+import mmap
 from threading import Thread
 import SQL
 import io
@@ -17,7 +18,7 @@ class read_tread (Thread):
         self.lim = lim
 
     def run(self):
-        if self.line != '[\n':
+        if self.line != '[\r\n':
             if self.line[0] == ',':
                 self.line = self.line[1:]
             d = ujson.loads(self.line)
@@ -93,21 +94,25 @@ class read_tread (Thread):
                     for author in d['authors']:
                         if "id" in author:
                             db.addAuthorship(str(author["id"]), str(d['id']))
-                print((str(p.id_in_bd) +"done"))
-            print((str(p.id_in_bd) +"already"))
-            self.lim.len -= 1
+                print((str(d['id']) +" done"))
+            print((str(d['id']) +" already"))
+            self.lim.len = self.lim.len - 1
 
 
 if __name__ == '__main__':
     db = SQL.createBd()
-    n = 15
+    n = 16
     lim = limit(0)
 
-    with io.open("dblp.v12.json", encoding='utf-8') as file:
-        for line in file:
+    # with io.open("dblp.v12.json", encoding='utf-8') as file:
+    #     for line in file:
+    with open("dblp.v12.json", "r+b") as f:
+        map_file = mmap.mmap(f.fileno(), 0)
+        for line in iter(map_file.readline, b""):
+            line = line.decode("utf-8")
             if lim.len <= n:
                 tread = read_tread(db, line, lim)
-                lim.len += 1
+                lim.len = lim.len +1
                 tread.start()
             else:
                 while lim.len >= n:
