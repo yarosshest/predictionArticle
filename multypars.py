@@ -95,7 +95,8 @@ class read_tread (Thread):
                         if "id" in author:
                             db.addAuthorship(str(author["id"]), str(d['id']))
                 print((str(d['id']) +" done"))
-            print((str(d['id']) +" already"))
+            else:
+                print((str(d['id']) + " already"))
             self.lim.len = self.lim.len - 1
 
 

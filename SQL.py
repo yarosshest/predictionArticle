@@ -6,7 +6,7 @@ from sqlalchemy.ext.declarative import *
 from sqlalchemy.orm import *
 
 # расположение БД
-engine = create_engine('sqlite:///bdMiner.db', echo=False)
+engine = create_engine('sqlite:///bdlp.db', echo=False)
 Base = declarative_base()
 meta = MetaData()
 
@@ -24,26 +24,21 @@ class Authors(Base):
 class Papers(Base):
     __tablename__ = 'Papers'
     id = Column(Integer, primary_key=True)
-    id_in_bd = Column(String)
-    title = Column(String)
     authors = Column(PickleType)
-    venue_id = Column(String)
-    venue_type = Column(String)
-    venue_raw = Column(String)
-    year = Column(String)
-    keywords = Column(PickleType)
-    references = Column(PickleType)
+    title = Column(String)
+    year = Column(Integer)
     n_citation = Column(Integer)
+    page_start = Column(Integer)
+    page_end = Column(Integer)
     doc_type = Column(String)
-    lang = Column(String)
     publisher = Column(String)
-    abstract = Column(String)
+    volume = Column(Integer)
+    issue = Column(Integer)
+    references = Column(PickleType)
     indexed_abstract = Column(PickleType)
-    issn = Column(String)
-    isbn = Column(String)
-    doi = Column(String)
-    pdf = Column(String)
-    url = Column(String)
+    fos = Column(PickleType)
+    venue = Column(PickleType)
+    alias_ids = Column(PickleType)
 
 
 # Таблица связей
